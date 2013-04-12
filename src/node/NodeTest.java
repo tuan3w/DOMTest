@@ -21,7 +21,7 @@ public class NodeTest implements Node {
 	protected NamedNodeMapTest attributes;
 	protected HashMap<String, Object> data;
 	protected String baseURI;
-	protected int id;
+
 	public NodeTest(String name) {
 		nodeName = name;
 		nodeType = ELEMENT_NODE; //default is element node
@@ -74,12 +74,20 @@ public class NodeTest implements Node {
 
 	@Override
 	public Node getPreviousSibling() {
-		return parentNode.getChildNodes().item(id - 1);
+		if (parentNode == null)
+			return null;
+		ArrayList<Node> listChild = ((NodeListTest) parentNode.getChildNodes()).getItems();
+		int id = listChild.indexOf(this);
+		return listChild.get(id - 1);
 	}
 
 	@Override
 	public Node getNextSibling() {
-		return parentNode.getChildNodes().item(id + 1);
+		if (parentNode == null)
+			return null;
+		ArrayList<Node> listChild = ((NodeListTest) parentNode.getChildNodes()).getItems();
+		int id = listChild.indexOf(this);
+		return listChild.get(id + 1);
 	}
 
 	@Override
@@ -89,7 +97,12 @@ public class NodeTest implements Node {
 	
 	//get attribute of node
 	public String getAttribute(String attr){
-		return attributes.getNamedItem(attr).toString();
+		Node result = attributes.getNamedItem(attr);
+		//return result.toString();
+		if (result != null)
+			return result.getNodeValue();
+		else
+			return "";
 	}
 	public void setAttribute(String name, String value){
 		//System.out.println("Name : " + name + ", attr: " + value);
@@ -113,6 +126,7 @@ public class NodeTest implements Node {
 	public Node insertBefore(Node newChild, Node refChild) throws DOMException {
 		ArrayList<Node> t;
 		childNodes.insertItemBefore(newChild, refChild);
+		((NodeTest)newChild).setParentNode(this);
 		return this; ///?
 	}
 //	@Override
@@ -136,6 +150,8 @@ public class NodeTest implements Node {
 	@Override
 	public Node appendChild(Node newChild) throws DOMException {
 		childNodes.addItem(newChild);
+		
+		((NodeTest)newChild).parentNode = this;
 		return this;
 	}
 
@@ -278,6 +294,9 @@ public class NodeTest implements Node {
 		
 		result +="\n" +  spaces +"</" + nodeName  + ">";
 		return result;
+	}
+	private void setParentNode(NodeTest node){
+		parentNode = node;
 	}
 	@Override
 	public String toString() {

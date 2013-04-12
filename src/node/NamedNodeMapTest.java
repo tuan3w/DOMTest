@@ -3,6 +3,7 @@ package node;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.w3c.dom.DOMException;
@@ -16,13 +17,19 @@ public class NamedNodeMapTest implements NamedNodeMap{
 	}
 	@Override
 	public Node getNamedItem(String name) {
+		//System.out.println("find attribute " + name + ": " + attributes.get(name));
 		return attributes.get(name);
 	}
 
 	@Override
 	public Node setNamedItem(Node arg) throws DOMException {
+		//System.out.println(arg.getNodeName() + ": " + arg);
 		//System.out.println("set attribute: " + arg.getNodeName());
 		attributes.put(arg.getNodeName(), arg);
+		
+		//test
+//		System.out.println("Test :");
+//		getNamedItem(arg.getNodeName());
 		return arg;
 	}
 

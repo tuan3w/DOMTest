@@ -40,9 +40,9 @@ import org.w3c.dom.UserDataHandler;
 
 
 
-public class DOMTest extends NodeTest implements Document{
+public class DocumentTest extends NodeTest implements Document{
 	
-	public DOMTest() {
+	public DocumentTest() {
 		super("html");
 		//node type DOCUMENT_NODE;
 		this.nodeType = DOCUMENT_NODE;
@@ -152,6 +152,44 @@ public class DOMTest extends NodeTest implements Document{
 	public Node createElement(String name){
 		Node t = new NodeTest(name);
 		return t;
+	}
+	public NodeList getElementsByTagName(String tagName){
+		NodeListTest list = new NodeListTest();
+		for (int i= childNodes.getLength() -1; i>=0; i--){
+			Node t = childNodes.item(i);
+			if (t.getNodeName().equalsIgnoreCase(tagName))
+				list.addItem(t);
+		}
+		return list;
+	}
+	public Node getElementById(String id){
+//		for (int i= childNodes.getLength() -1; i>=0; i--){
+//			System.out.println(i);
+//			NodeTest t = (NodeTest)childNodes.item(i);
+//			if (t.getAttribute("id").equalsIgnoreCase(id)){
+//				System.out.println("found");
+//				return t;
+//			}
+//		}
+		return findChilElement(this, "id", id);
+	}
+	private Node findChilElement(Node n,String attr, String value){
+		ArrayList<Node> list =((NodeListTest)n.getChildNodes()).getItems();
+		
+		for (Node t: list){
+			System.out.println("Node " + t.getNodeName() + " : " + ((NodeTest)t).getAttribute(attr));
+			if (((NodeTest)t).getAttribute("id").equals(value))
+				return t;
+			if (t.hasChildNodes()){
+				Node out = null;
+				for (Node temp: ((NodeListTest)t.getChildNodes()).getItems()){
+					out = findChilElement(temp, attr, value);
+					if (out != null)
+						return out;
+				}
+			}
+		}
+		return null;
 	}
 	@Override
 	public String toString() {

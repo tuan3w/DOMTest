@@ -2,4 +2,4 @@ DOMTEST
 
 ======================
 
-an DOM example implement based Java DOM Interface
+A DOM example implement based Java DOM Interface
